@@ -5,4 +5,5 @@
   max-width: 100%;
   margin: 0 auto;
   font-family: 'inter', Arial, Helvetica, sans-serif;
+  min-height: 100vh;
 }

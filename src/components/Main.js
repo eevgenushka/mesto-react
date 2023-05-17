@@ -59,8 +59,6 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
           <Card
             key={card._id}
             card={card}
-            name={card.name}
-            link={card.link}
             likes={card.likes.length}
             onCardClick={onCardClick}
           />

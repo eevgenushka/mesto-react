@@ -29,10 +29,7 @@
     return fetch(`${this._url}/users/me`, {
       method: "PATCH",
       headers: this._headers,
-      body: JSON.stringify({
-        name: userData["name"],
-        about: userData["job"],
-      }),
+      body: JSON.stringify(userData)
     }).then((res) => this._getResponseData(res));
   }
 
@@ -58,6 +55,10 @@
     }).then((res) => this._getResponseData(res));
   }
 
+  changeLikeCardStatus(cardId, isLiked) {
+		return isLiked ? this.setLikeCard(cardId) : this.removeLikeCard(cardId)
+	};
+
   deleteCard(cardId) {
     return fetch(`${this._url}/cards/${cardId}`, {
       method: "DELETE",
@@ -70,7 +71,7 @@
       method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({
-        avatar: data["avatarLink"],
+        avatar: data["avatar"],
       }),
     }).then((res) => this._getResponseData(res));
   }

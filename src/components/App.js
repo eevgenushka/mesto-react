@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import "../index.css";
 import logo from "../images/logo.svg";
@@ -6,14 +6,30 @@ import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
 import ImagePopup from "./ImagePopup";
+import CurrentUserContext from '../contexts/CurrentUserContext';
+import api from '../utils/Api';
 
 function App() {
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpened] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpened] = useState(false);
   const [isEditProfilePopupOpen, setEditProfileOpened] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [currentUser, setCurrentUser] = useState({});
+  const [cards, setCards] = useState([]);
 
+  useEffect(() => {
+    Promise.all([api.getMyProfile(), api.getInitialCards()])
+      .then(([userData, initialCards]) => {
+        setCurrentUser(userData)
+        setCards(initialCards);
+      })
+      .catch((err) => console.log(err));
+	}, []);
+  
   function handleCardClick(card) {
     setSelectedCard(card);
   }
@@ -36,102 +52,69 @@ function App() {
     setEditProfileOpened(false);
     setSelectedCard(null);
   }
+  function handleCardLike(card) {
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
+        setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+    })
+    .catch((err) => console.log(err))
+}; 
+function handleCardDelete(card) {
+  api.deleteCard(card._id)
+    .then(() => {
+      setCards((state) => state.filter((c) => c._id !== card._id));
+    })
+    .catch((err) => console.log(err))
+};
+function handleAddPlaceSubmit(name, link) {
+  api.setNewCard(name, link)
+    .then((newCard) => setCards([newCard, ...cards]))
+    .then(() => closeAllPopups())
+    .catch((err) => console.log(err))
+};
+function handleUpdateUser(userData) {
+  api.editMyProfile(userData)
+    .then((data) => {
+      setCurrentUser(data)
+    })
+    .then(() => closeAllPopups())
+    .catch((err) => console.log(err))
+};
+
+function handleUpdateAvatar(data) {
+  api.setNewAvatar(data)
+    .then((res) => {
+      setCurrentUser(res)
+    })
+    .then(() => closeAllPopups())
+    .catch((err) => console.log(err))
+};
   return (
+    <CurrentUserContext.Provider value={currentUser}>
     <div className="page">
       <Header logo={logo} />
       <Main
+        cards={cards}
         onCardClick={handleCardClick}
         onEditAvatar={handleEditAvatarClick}
         onEditProfile={handleEditProfileClick}
         onAddPlace={handleAddPlaceClick}
+        onCardLike={handleCardLike}
+				onCardDelete={handleCardDelete}
       />
       <Footer />
-      <PopupWithForm
-        name="edit-profile"
-        title="Редактировать профиль"
-        buttonText="Сохранить"
-        isOpen={isEditProfilePopupOpen}
-        onClose={closeAllPopups}
-      >
-        <input
-          id="username"
-          type="text"
-          name="username"
-          className="popup__input popup__input_type_name"
-          placeholder="Укажите имя"
-          minLength={2}
-          maxLength={40}
-          required=""
-        />
-        <span className="popup__error" id="name-input-error">
-          Заполните это поле{" "}
-        </span>
-        <input
-          id="job-input"
-          type="text"
-          name="job"
-          className="popup__input popup__input_type_job"
-          placeholder="Укажите профессию"
-          minLength={2}
-          maxLength={200}
-          required=""
-        />
-        <span className="popup__error" id="job-input-error">
-          Заполните это поле
-        </span>
-      </PopupWithForm>
-      <PopupWithForm
-        name="add-card"
-        title="Новое место"
-        buttonText="Создать"
-        isOpen={isAddPlacePopupOpen}
-        onClose={closeAllPopups}
-      >
-        <input
-          id="description"
-          type="text"
-          name="description"
-          className="popup__input popup__input_type_place"
-          placeholder="Название"
-          minLength={2}
-          maxLength={30}
-          required=""
-        />
-        <span className="popup__error" id="title-input-error">
-          Вы пропустили это поле.
-        </span>
-        <input
-          id="link"
-          type="url"
-          name="link"
-          className="popup__input popup__input_type_link"
-          placeholder="Ссылка на картинку"
-          required=""
-        />
-        <span className="popup__error" id="link-input-error">
-          Введите адрес сайта.
-        </span>
-      </PopupWithForm>
+      <EditProfilePopup
+					isOpen={isEditProfilePopupOpen}
+					onClose={closeAllPopups}
+					onUpdateUser={handleUpdateUser}
+				/>
+     <AddPlacePopup
+					isOpen={isAddPlacePopupOpen}
+					onClose={closeAllPopups}
+					onAddPlace={handleAddPlaceSubmit}
+				/>
       <ImagePopup card={selectedCard} onClose={closeAllPopups}></ImagePopup>
-      <PopupWithForm
-        name="edit-avatar"
-        title="Обновить аватар"
-        buttonText="Сохранить"
-        isOpen={isEditAvatarPopupOpen}
-        onClose={closeAllPopups}
-      >
-        <input
-          id="avatar"
-          type="url"
-          name="avatar"
-          className="popup__input popup__input_type_avatar"
-          placeholder="Ссылка на картинку"
-          required=""
-        />
-        <span className="popup__error" id="avatar-error">
-          Введите адрес сайта.
-        </span>
-      </PopupWithForm>
+      <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar}/> 
       <PopupWithForm
         name="delete-card"
         title="Вы уверены?"
@@ -139,6 +122,7 @@ function App() {
         onClose={closeAllPopups}
       />
     </div>
+    </CurrentUserContext.Provider>
   );
 }
 export default App;

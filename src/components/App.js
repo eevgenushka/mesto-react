@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import CurrentUserContext from '../contexts/CurrentUserContext';
 import "../index.css";
 import logo from "../images/logo.svg";
 import Header from "./Header";
@@ -10,7 +10,6 @@ import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import ImagePopup from "./ImagePopup";
-import CurrentUserContext from '../contexts/CurrentUserContext';
 import api from '../utils/Api';
 
 function App() {
@@ -98,7 +97,7 @@ function handleUpdateAvatar(data) {
         onCardClick={handleCardClick}
         onEditAvatar={handleEditAvatarClick}
         onEditProfile={handleEditProfileClick}
-        onAddPlace={handleAddPlaceClick}
+        onAddPlace={handleAddPlaceClick}       
         onCardLike={handleCardLike}
 				onCardDelete={handleCardDelete}
       />

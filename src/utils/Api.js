@@ -25,11 +25,14 @@
     }).then((res) => this._getResponseData(res));
   }
 
-  editMyProfile(userData) {
+  editMyProfile(name, about) {
     return fetch(`${this._url}/users/me`, {
       method: "PATCH",
       headers: this._headers,
-      body: JSON.stringify(userData)
+      body: JSON.stringify({
+        name: name,
+        about: about,
+      }),
     }).then((res) => this._getResponseData(res));
   }
 

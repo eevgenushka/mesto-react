@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import React from "react";
 import CurrentUserContext from '../contexts/CurrentUserContext';
 
 function Card({ card, onCardClick, onCardDelete, onCardLike }) {
@@ -29,9 +28,8 @@ function Card({ card, onCardClick, onCardDelete, onCardLike }) {
       {isOwn && <button className="element__basket" type="button" onClick={handleDeleteClick}></button>}
         <img
           className="element__item"
-          style={{
-            backgroundImage: `url(${card.link})`,
-          }}
+          src={card.link}
+          alt={card.name}
           onClick={handleClick}
         />
         <div className="element__description">

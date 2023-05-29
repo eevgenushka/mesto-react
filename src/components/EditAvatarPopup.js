@@ -17,7 +17,6 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
 			avatar: avatarRef.current.value,
 		});
 	};
-
 	return (
         <PopupWithForm
         name="edit-avatar"

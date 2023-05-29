@@ -9,12 +9,17 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-
+  
+    if (!cardNameRef.current.value || !cardLinkRef.current.value) {
+      return;
+    }
+  
     onAddPlace({
       name: cardNameRef.current.value,
       link: cardLinkRef.current.value,
     });
   }
+  
 
   useEffect(() => {
     cardNameRef.current.value = '';

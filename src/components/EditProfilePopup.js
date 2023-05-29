@@ -41,9 +41,9 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
 		onSubmit={handleSubmit}
       >
         <input
-          id="username"
+          id="name-input"
           type="text"
-          name="username"
+          name="name"
           className="popup__input popup__input_type_name"
           placeholder="Укажите имя"
           value={name || ''}
@@ -56,9 +56,9 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
           Заполните это поле{" "}
         </span>
         <input
-          id="job-input"
+          id="about-input"
           type="text"
-          name="job"
+          name="about"
           className="popup__input popup__input_type_job"
           placeholder="Укажите профессию"
           value={description || ''}

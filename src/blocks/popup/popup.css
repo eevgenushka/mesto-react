@@ -11,5 +11,5 @@
   opacity: 0;
   display: flex;
   z-index: 8;
-  transition: visibility 0.5s, opacity 0.5s;
+  transition: visibility 0s, 0.5s linear;
 }

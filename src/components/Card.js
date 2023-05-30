@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import CurrentUserContext from '../contexts/CurrentUserContext';
+import CurrentUserContext from "../contexts/CurrentUserContext";
 
 function Card({ card, onCardClick, onCardDelete, onCardLike }) {
   const currentUser = useContext(CurrentUserContext);
@@ -13,8 +13,7 @@ function Card({ card, onCardClick, onCardDelete, onCardLike }) {
   function handleClick() {
     onCardClick(card);
   }
-  function handleDeleteClick(e) {
-		e.stopPropagation();
+  function handleDeleteClick() {
 		onCardDelete(card);
 	};
 

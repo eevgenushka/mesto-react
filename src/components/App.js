@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import CurrentUserContext from '../contexts/CurrentUserContext';
+import CurrentUserContext from "../contexts/CurrentUserContext";
 import "../index.css";
 import logo from "../images/logo.svg";
 import Header from "./Header";
@@ -10,7 +10,7 @@ import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import ImagePopup from "./ImagePopup";
-import api from '../utils/Api';
+import api from "../utils/Api";
 
 function App() {
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpened] = useState(false);
@@ -63,6 +63,7 @@ function handleCardDelete(card) {
     .then(() => {
       setCards((state) => state.filter((c) => c._id !== card._id));
     })
+    .then(() => closeAllPopups())
     .catch((err) => console.log(err))
 };
 function handleAddPlaceSubmit(name, link) {
@@ -71,8 +72,9 @@ function handleAddPlaceSubmit(name, link) {
     .then(() => closeAllPopups())
     .catch((err) => console.log(err))
 };
-function handleUpdateUser(userData) {
-  api.editMyProfile(userData)
+
+function handleUpdateUser(name, about) {
+  api.editMyProfile(name, about)
     .then((data) => {
       setCurrentUser(data)
     })
@@ -119,6 +121,7 @@ function handleUpdateAvatar(data) {
         title="Вы уверены?"
         buttonText="Да"
         onClose={closeAllPopups}
+        onCardDelete={handleCardDelete}
       />
     </div>
     </CurrentUserContext.Provider>

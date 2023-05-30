@@ -25,7 +25,7 @@
     }).then((res) => this._getResponseData(res));
   }
 
-  editMyProfile(name, about) {
+  editMyProfile({name, about}) {
     return fetch(`${this._url}/users/me`, {
       method: "PATCH",
       headers: this._headers,
@@ -36,7 +36,7 @@
     }).then((res) => this._getResponseData(res));
   }
 
-  setNewCard(name, link) {
+  setNewCard({name, link}) {
     return fetch(`${this._url}/cards`, {
       method: "POST",
       headers: this._headers,

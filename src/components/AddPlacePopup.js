@@ -1,30 +1,33 @@
-import React, { useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 import PopupWithForm from "./PopupWithForm";
 
 function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
 
-  const cardNameRef = useRef(null);
-  const cardLinkRef = useRef(null);
+    const [name, setName] = useState('');
+	const [link, setLink] = useState('');
 
-  function handleSubmit(e) {
-    e.preventDefault();
-  
-    if (!cardNameRef.current.value || !cardLinkRef.current.value) {
-      return;
-    }
-  
-    onAddPlace({
-      name: cardNameRef.current.value,
-      link: cardLinkRef.current.value,
-    });
-  }
-  
+	function handleChangeName(e) {
+		setName(e.target.value)
+	};
 
-  useEffect(() => {
-    cardNameRef.current.value = '';
-    cardLinkRef.current.value = '';
-  }, [isOpen]);
+	function handleChangeLink(e) {
+		setLink(e.target.value)
+	};
+
+	function handleSubmit(e) {
+		e.preventDefault();
+        
+		onAddPlace({
+			name,
+			link
+		});
+	};
+
+	useEffect(() => {
+		setName('');
+		setLink('');
+	}, [isOpen]);
 
 	return (
         <PopupWithForm
@@ -39,7 +42,8 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
           id="description"
           type="text"
           name="description"
-          ref={ cardNameRef }
+          value={name || ''}
+          onChange={handleChangeName}
           className="popup__input popup__input_type_place"
           placeholder="Название"
           minLength={2}
@@ -53,7 +57,8 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
           id="link"
           type="url"
           name="link"
-          ref={ cardLinkRef }
+          value={link || ''}
+          onChange={handleChangeLink}
           className="popup__input popup__input_type_link"
           placeholder="Ссылка на картинку"
           required=""

@@ -39,7 +39,7 @@ function Card({ card, onCardClick, onCardDelete, onCardLike }) {
               type="button"
               aria-label="like"
               onClick={handleLikeClick}
-            ></button>
+            />
             <p className="element__like-counter">{card.likes.length}</p>
           </div>
         </div>

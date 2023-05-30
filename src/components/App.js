@@ -19,6 +19,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     Promise.all([api.getMyProfile(), api.getInitialCards()])
@@ -67,28 +68,34 @@ function handleCardDelete(card) {
     .catch((err) => console.log(err))
 };
 function handleAddPlaceSubmit(name, link) {
+  setIsLoading(true);
   api.setNewCard(name, link)
     .then((newCard) => setCards([newCard, ...cards]))
     .then(() => closeAllPopups())
     .catch((err) => console.log(err))
+    .finally(() => { setIsLoading(false)});
 };
 
 function handleUpdateUser(name, about) {
+  setIsLoading(true);
   api.editMyProfile(name, about)
     .then((data) => {
       setCurrentUser(data)
     })
     .then(() => closeAllPopups())
     .catch((err) => console.log(err))
+    .finally(() => { setIsLoading(false)});
 };
 
 function handleUpdateAvatar(data) {
+  setIsLoading(true);
   api.setNewAvatar(data)
     .then((res) => {
       setCurrentUser(res)
     })
     .then(() => closeAllPopups())
     .catch((err) => console.log(err))
+    .finally(() => { setIsLoading(false)});
 };
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -108,14 +115,16 @@ function handleUpdateAvatar(data) {
 					isOpen={isEditProfilePopupOpen}
 					onClose={closeAllPopups}
 					onUpdateUser={handleUpdateUser}
+          isLoading={isLoading}
 				/>
      <AddPlacePopup
 					isOpen={isAddPlacePopupOpen}
 					onClose={closeAllPopups}
 					onAddPlace={handleAddPlaceSubmit}
+          isLoading={isLoading}
 				/>
       <ImagePopup card={selectedCard} onClose={closeAllPopups}></ImagePopup>
-      <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar}/> 
+      <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} isLoading={isLoading}/> 
       <PopupWithForm
         name="delete-card"
         title="Вы уверены?"
